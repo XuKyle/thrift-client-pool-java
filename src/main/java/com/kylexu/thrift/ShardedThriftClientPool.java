@@ -1,4 +1,4 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,20 +11,20 @@ import org.apache.thrift.TServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wealoha.thrift.exception.NoBackendServiceException;
+import com.kylexu.thrift.exception.NoBackendServiceException;
 
 /**
  * A sharded wrapper for {@link ThriftClientPool}<br/>
- * 
+ * <p>
  * List<ServiceInfo> -> List<List<ServiceInfo>><br/>
  * for example: three node 10.0.1.1:9000,10.0.1.2:9000,10.0.1.3:9000, <br/>
  * will divide into 3 partitions: list(10.0.1.1:9000),
  * list(10.0.1.2:9000),
  * list(10.0.1.3:9000)<br/>
- * 
+ * <p>
  * if a key's hash is 10, then 10 % 3 = 1, selected node will be
  * 10.0.1.2:9000
- * 
+ *
  * @author javamonk
  * @createTime 2015年6月5日 上午11:58:08
  */
@@ -46,16 +46,15 @@ public class ShardedThriftClientPool<K, T extends TServiceClient> {
 
     /**
      * @param serviceList
-     * @param hashFunction get a key's hash
-     * @param partitionFunction split list of {@link ServiceInfo} to
-     *        partition
-     * 
+     * @param hashFunction       get a key's hash
+     * @param partitionFunction  split list of {@link ServiceInfo} to
+     *                           partition
      * @param clientPoolFunction
      */
     public ShardedThriftClientPool(List<ServiceInfo> serviceList,
-            Function<K, Integer> hashFunction,
-            Function<List<ServiceInfo>, List<List<ServiceInfo>>> partitionFunction,
-            Function<List<ServiceInfo>, ThriftClientPool<T>> clientPoolFunction) {
+                                   Function<K, Integer> hashFunction,
+                                   Function<List<ServiceInfo>, List<List<ServiceInfo>>> partitionFunction,
+                                   Function<List<ServiceInfo>, ThriftClientPool<T>> clientPoolFunction) {
 
         this.hashFunction = hashFunction;
         this.partitionFunction = partitionFunction;
@@ -66,17 +65,16 @@ public class ShardedThriftClientPool<K, T extends TServiceClient> {
 
     /**
      * one server one partition
-     * 
+     *
      * @param serviceList
-     * @param hashFunction get a key's hash
-     * 
+     * @param hashFunction       get a key's hash
      * @param clientPoolFunction
      */
     public ShardedThriftClientPool(List<ServiceInfo> serviceList,
-            Function<K, Integer> hashFunction,
-            Function<List<ServiceInfo>, ThriftClientPool<T>> clientPoolFunction) {
+                                   Function<K, Integer> hashFunction,
+                                   Function<List<ServiceInfo>, ThriftClientPool<T>> clientPoolFunction) {
         this(serviceList, hashFunction, servers -> servers.stream()
-                .map(server -> Collections.singletonList(server)).collect(Collectors.toList()),
+                        .map(server -> Collections.singletonList(server)).collect(Collectors.toList()),
                 clientPoolFunction);
     }
 
@@ -123,7 +121,7 @@ public class ShardedThriftClientPool<K, T extends TServiceClient> {
      *
      * @param services
      * @return previous pool, you must release each pool(for example wait
-     *         some seconds while no access to pool)
+     * some seconds while no access to pool)
      */
     public Map<Integer, ThriftClientPool<T>> setServices(List<ServiceInfo> services) {
         synchronized (poolMap) {

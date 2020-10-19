@@ -1,4 +1,4 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TProtocol;

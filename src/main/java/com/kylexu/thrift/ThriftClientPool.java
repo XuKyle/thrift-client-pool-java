@@ -1,4 +1,4 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
@@ -18,9 +18,9 @@ import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.wealoha.thrift.exception.ConnectionFailException;
-import com.wealoha.thrift.exception.NoBackendServiceException;
-import com.wealoha.thrift.exception.ThriftException;
+import com.kylexu.thrift.exception.ConnectionFailException;
+import com.kylexu.thrift.exception.NoBackendServiceException;
+import com.kylexu.thrift.exception.ThriftException;
 
 /**
  * Pool for ThriftClient <br/>

@@ -4,7 +4,7 @@
  * DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
  *  @generated
  */
-package com.wealoha.thrift.service;
+package com.kylexu.thrift.service;
 
 import java.util.BitSet;
 import java.util.Collections;

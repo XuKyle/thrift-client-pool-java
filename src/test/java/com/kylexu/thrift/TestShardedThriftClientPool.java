@@ -1,15 +1,14 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import java.util.Arrays;
 import java.util.List;
 
+import com.kylexu.thrift.service.TestThriftService;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.transport.TFramedTransport;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.wealoha.thrift.service.TestThriftService.Client;
 
 /**
  * 
@@ -32,14 +31,14 @@ public class TestShardedThriftClientPool {
                 new ServiceInfo("127.0.0.1", 9090), //
                 new ServiceInfo("127.0.0.1", 9091), //
                 new ServiceInfo("127.0.0.1", 9092));
-        ShardedThriftClientPool<Integer, Client> shardedPool = new ShardedThriftClientPool<>(
+        ShardedThriftClientPool<Integer, TestThriftService.Client> shardedPool = new ShardedThriftClientPool<>(
                 serviceList, //
                 key -> key, //
-                servers -> new ThriftClientPool<>(servers, transport -> new Client(
+                servers -> new ThriftClientPool<>(servers, transport -> new TestThriftService.Client(
                         new TBinaryProtocol(new TFramedTransport(transport))), config));
 
         Integer key = 10;
-        ThriftClientPool<Client> pool = shardedPool.getShardedPool(key);
+        ThriftClientPool<TestThriftService.Client> pool = shardedPool.getShardedPool(key);
         Assert.assertEquals(Arrays.asList(new ServiceInfo("127.0.0.1", 9091)), pool.getServices());
     }
 
@@ -56,7 +55,7 @@ public class TestShardedThriftClientPool {
                 new ServiceInfo("127.0.0.1", 9093), //
                 new ServiceInfo("127.0.0.1", 9094));
 
-        ShardedThriftClientPool<Integer, Client> shardedPool = new ShardedThriftClientPool<>(
+        ShardedThriftClientPool<Integer, TestThriftService.Client> shardedPool = new ShardedThriftClientPool<>(
                 serviceList, //
                 key -> key, //
                 servers -> {
@@ -65,11 +64,11 @@ public class TestShardedThriftClientPool {
                             Arrays.asList(servers.get(2), servers.get(3)), //
                             Arrays.asList(servers.get(4)));
                 }, //
-                servers -> new ThriftClientPool<>(servers, transport -> new Client(
+                servers -> new ThriftClientPool<>(servers, transport -> new TestThriftService.Client(
                         new TBinaryProtocol(new TFramedTransport(transport))), config));
 
         Integer key = 10;
-        ThriftClientPool<Client> pool = shardedPool.getShardedPool(key);
+        ThriftClientPool<TestThriftService.Client> pool = shardedPool.getShardedPool(key);
         Assert.assertEquals(Arrays.asList(new ServiceInfo("127.0.0.1", 9092), //
                 new ServiceInfo("127.0.0.1", 9093)), //
                 pool.getServices());

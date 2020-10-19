@@ -1,4 +1,4 @@
-package com.wealoha.thrift.exception;
+package com.kylexu.thrift.exception;
 
 /**
  * No backend service

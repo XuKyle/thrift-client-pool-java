@@ -1,4 +1,4 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import java.io.Closeable;
 
@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The thrift client which hold the connection to backend server.<br/>
- * 
+ * <p>
  * ThriftClient is not thread-safe, you must obtain separately from
  * {@link ThriftClientPool} for each thread.
- * 
+ *
  * @author javamonk
  * @createTime 2014年7月4日 下午3:50:51
  */
@@ -37,7 +37,7 @@ public class ThriftClient<T extends TServiceClient> implements Closeable {
 
     /**
      * get backend service which this client current connect to
-     * 
+     *
      * @return
      */
     public ServiceInfo getServiceInfo() {
@@ -46,7 +46,7 @@ public class ThriftClient<T extends TServiceClient> implements Closeable {
 
     /**
      * Retrieve the IFace
-     * 
+     *
      * @return
      */
     public T iFace() {
@@ -78,7 +78,6 @@ public class ThriftClient<T extends TServiceClient> implements Closeable {
 
     /**
      * client should return to pool
-     * 
      */
     public void finish() {
         this.finish = true;

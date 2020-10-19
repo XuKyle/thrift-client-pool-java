@@ -1,4 +1,4 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 

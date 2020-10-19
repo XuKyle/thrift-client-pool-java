@@ -1,4 +1,4 @@
-package com.wealoha.thrift;
+package com.kylexu.thrift;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.kylexu.thrift.service.TestThriftService;
+import com.kylexu.thrift.service.TestThriftServiceHandler;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TThreadPoolServer;
@@ -19,12 +21,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.wealoha.thrift.service.TestThriftService;
-import com.wealoha.thrift.service.TestThriftService.Client;
-import com.wealoha.thrift.service.TestThriftService.Iface;
-import com.wealoha.thrift.service.TestThriftService.Processor;
-import com.wealoha.thrift.service.TestThriftServiceHandler;
 
 /**
  * 
@@ -45,7 +41,7 @@ public class TestThriftClientPool {
             Args processor = new TThreadPoolServer.Args(serverTransport)
                     .inputTransportFactory(new TFramedTransport.Factory())
                     .outputTransportFactory(new TFramedTransport.Factory())
-                    .processor(new Processor<>(new TestThriftServiceHandler()));
+                    .processor(new TestThriftService.Processor<>(new TestThriftServiceHandler()));
             //            processor.maxWorkerThreads = 20;
             TThreadPoolServer server = new TThreadPoolServer(processor);
 
@@ -65,10 +61,10 @@ public class TestThriftClientPool {
         config.setFailover(true);
         config.setTimeout(1000);
         ThriftClientPool<TestThriftService.Client> pool = new ThriftClientPool<>(serverList,
-                transport -> new Client(new TBinaryProtocol(new TFramedTransport(transport))),
+                transport -> new TestThriftService.Client(new TBinaryProtocol(new TFramedTransport(transport))),
                 config);
 
-        Iface iface = pool.iface();
+        TestThriftService.Iface iface = pool.iface();
         iface.echo("Hello!");
         boolean exceptionThrow = false;
         try {
@@ -94,7 +90,7 @@ public class TestThriftClientPool {
         config.setMaxTotal(10);
         //        config.setBlockWhenExhausted(true);
         ThriftClientPool<TestThriftService.Client> pool = new ThriftClientPool<>(serverList,
-                transport -> new Client(new TBinaryProtocol(new TFramedTransport(transport))),
+                transport -> new TestThriftService.Client(new TBinaryProtocol(new TFramedTransport(transport))),
                 config);
         // pool.setServices(serverList);
 
@@ -104,8 +100,8 @@ public class TestThriftClientPool {
             int counter = i;
             executorService.submit(() -> {
                 try {
-                    try (ThriftClient<Client> client = pool.getClient()) {
-                        Iface iFace = client.iFace();
+                    try (ThriftClient<TestThriftService.Client> client = pool.getClient()) {
+                        TestThriftService.Iface iFace = client.iFace();
                         String response = iFace.echo("Hello " + counter + "!");
                         logger.info("get response: {}", response);
                         client.finish();
@@ -117,7 +113,7 @@ public class TestThriftClientPool {
 
             executorService.submit(() -> {
                 try {
-                    Iface iFace = pool.iface();
+                    TestThriftService.Iface iFace = pool.iface();
                     String response = iFace.echo("Hello " + counter + "!");
                     logger.info("get response: {}", response);
                 } catch (Throwable e) {
